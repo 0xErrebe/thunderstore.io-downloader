@@ -1,5 +1,9 @@
 import { Mod } from '../App';
-const API_URL = 'http://localhost:3000/api/gethtml';
+const API_URL = (
+  import.meta.env.PROD
+    ? 'project-tmd.vercel.app'
+    : 'http://localhost:3000'
+) + '/api/gethtml';
 
 export async function getMods(modpackUrl: string): Promise<[Mod[], { error: boolean, message: string }]> {
   const searchParam = new URLSearchParams({ thunderstore_url: modpackUrl });

@@ -131,13 +131,13 @@ function App() {
                 placeholder='Example: https://thunderstore.io/c/lethal-company/p/Momo/MomoChillPack/'
               />
               <button type='submit'>
-                <img src="./src/assets/searchButton.svg" alt="Search button" width={30} />
+                <img src="/searchButton.svg" alt="Search button" width={20} />
               </button>
             </div>
           </form>
           {
             loading
-              && <img src="./src/assets/loading.svg" alt="Loading" width={50} className='loading'/>
+              && <img src="/loading.svg" alt="Loading" width={50} className='loading'/>
           }
           {
             appState.mode === 'download'
