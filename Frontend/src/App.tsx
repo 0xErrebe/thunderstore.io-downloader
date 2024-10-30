@@ -5,6 +5,10 @@ import Modpack from './components/Modpack';
 import { getMods, getModDownloadUrl } from './utils/mods';
 import JSZip from 'jszip';
 
+const API_URL = import.meta.env.PROD
+  ? 'project-tmd.vercel.app'
+  : 'http://localhost:3000';
+
 interface AppState {
   mode: 'search' | 'download' | 'redownload';
 }
@@ -84,7 +88,7 @@ function App() {
       if (!downloadUrl) return null;
 
       const searchParams = new URLSearchParams({ thunderstore_url: downloadUrl });
-      return fetch(`http://localhost:3000/api/getmod?${searchParams}`, { signal: AbortSignal.timeout(8000) })
+      return fetch(`${API_URL}/api/getmod?${searchParams}`, { signal: AbortSignal.timeout(8000) })
         .then(res => res.blob())
         .then(blob => {
           setDownloadedMods(prev => [...prev, { title, blob }]);
