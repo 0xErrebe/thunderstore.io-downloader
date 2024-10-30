@@ -24,14 +24,12 @@ interface ModBlob {
 }
 
 const downloadFile = (file: Blob) => {
-  setTimeout(() => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(file);
-    a.download = 'Modpack.zip';
-    a.click();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(file);
+  a.download = 'Modpack.zip';
+  a.click();
 
-    URL.revokeObjectURL(a.href);
-  }, 1500);
+  URL.revokeObjectURL(a.href);
 };
 
 const generateZip = async(modlist: ModBlob[]): Promise<Blob> => {
@@ -50,7 +48,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
-  const [downloadedMods, setDownloadedMods] = useState<ModBlob[]>([]);
   const [errors, setErrors] = useState<{ title: string, error: string }[]>([]);
 
   const handleSearch = async(e: React.FormEvent<HTMLFormElement>) => {
@@ -80,6 +77,7 @@ function App() {
 
     setIsDownloading(prev => !prev);
 
+    const downloadedMods: ModBlob[] = [];
     const promises = modList.map(async(mod) => {
       const { title, url } = mod;
       if (!url || !title) return null;
@@ -91,14 +89,13 @@ function App() {
       return fetch(`${API_URL}/api/getmod?${searchParams}`, { signal: AbortSignal.timeout(8000) })
         .then(res => res.blob())
         .then(blob => {
-          setDownloadedMods(prev => [...prev, { title, blob }]);
+          downloadedMods.push({ title, blob });
         })
         .catch(err => {
           setErrors(prev => [...prev, { title, error: err.message }]);
           return null;
         })
         .finally(() => {
-          console.log('Promesa Finalizada');
           setDownloadProgress(prev => prev + Math.trunc((1 / modList.length) * 100));
         });
     });
@@ -106,15 +103,14 @@ function App() {
     // // TESTING PROMISE
     // promises.push(new Promise(resolve => setTimeout(resolve, 5000)));
 
-    await Promise.allSettled(promises);
+    await Promise.all(promises);
     setIsDownloading(prev => !prev);
     setAppState({ mode: 'redownload' });
-    const zip = await generateZip(downloadedMods);
-    downloadFile(zip);
+    await generateZip(downloadedMods)
+      .then(zip => downloadFile(zip));
   };
 
   const handleReDownloadModpack = async() => {
-    setDownloadedMods([]);
     setErrors([]);
     setDownloadProgress(0);
     handleDownloadModpack();
