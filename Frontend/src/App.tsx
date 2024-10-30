@@ -6,7 +6,7 @@ import { getMods, getModDownloadUrl } from './utils/mods';
 import JSZip from 'jszip';
 
 const API_URL = import.meta.env.PROD
-  ? 'http://project-tmd.vercel.app'
+  ? 'https://project-tmd.vercel.app'
   : 'http://localhost:3000';
 
 interface AppState {

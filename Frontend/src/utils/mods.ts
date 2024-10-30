@@ -1,7 +1,7 @@
 import { Mod } from '../App';
 const API_URL = (
   import.meta.env.PROD
-    ? 'http://project-tmd.vercel.app'
+    ? 'https://project-tmd.vercel.app'
     : 'http://localhost:3000'
 ) + '/api/gethtml';
 
