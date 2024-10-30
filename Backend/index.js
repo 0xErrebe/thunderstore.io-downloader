@@ -68,7 +68,7 @@ app.get("/api/getmod", async (req, res) => {
 app.use(e.static(path.join(__dirname, "./dist")));
 
 app.get("*", (req, res) => {
-  res.redirect("/")
+  res.sendFile(path.join(__dirname, "./dist/index.html"));
 });
 
 app.listen(PORT, () => {
